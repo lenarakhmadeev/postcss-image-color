@@ -1,0 +1,10 @@
+li {
+	background-image: linear-gradient(rgb(151, 189, 212), rgb(173, 155, 147));
+	background: url("1.jpg");
+	width: 200px;
+}
+
+div {
+	background-image: linear-gradient(rgb(206, 0, 0), rgb(206, 0, 0));
+	background: url("2.jpg");
+}

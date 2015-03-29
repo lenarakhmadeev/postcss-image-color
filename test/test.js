@@ -1,34 +1,26 @@
 var postcss = require('postcss');
 var expect  = require('chai').expect;
-var fs = require("fs");
-var css = fs.readFileSync("input.css", "utf8");
-var plugin = require('../');
+var fs = require('fs');
+var imageMockup = require('../');
 
-
-var test = function (input, output, opts) {
-    var processed = postcss(plugin(opts)).process(input).css;
-    expect(processed).to.eql(output);
-};
-
-var asyncTest = function (input, output, opts, cb) {
-    postcss(plugin(opts))
+var asyncTest = function (input, output, options, done) {
+    postcss(imageMockup(options))
         .process(input)
         .then(function (processed) {
-            setTimeout(function() {
-                expect(processed.css).to.eql(output);
-                cb();
-            });
-        });
+            expect(processed.css).to.eql(output);
+            done();
+        })
+        .catch(done);
 };
 
 var getCssText = function (name) {
-    return fs.readFileSync('test/css/' + name + '.css', 'utf8');
+    return fs.readFileSync(__dirname + '/fixtures/' + name + '.css', 'utf8');
 };
 
-describe('postcss-background', function () {
-    it('does something', function (done) {
+describe('postcss-image-mockup', function () {
+    it('From background', function (done) {
         var input = getCssText('1');
         var output = getCssText('1.out');
-        asyncTest(input, output, {}, done);
+        asyncTest(input, output, {basePath: 'test/img'}, done);
     });
 });

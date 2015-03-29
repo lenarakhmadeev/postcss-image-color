@@ -1,58 +1,49 @@
 var bdsm = require('bdsm');
+var path = require('path');
 
-var gradient = function (top, bottom) {
-   return 'linear-gradient(' + rgb(top) + ', ' + rgb(bottom) + ')';
+var mockupBackgroundImage = function (decl, options) {
+    var imagePath = extractPath(decl.value);
+    var fullPath = path.join(options.basePath, imagePath);
+
+    return getImageColors(fullPath).then(function (colors) {
+        // todo ??
+        //decl.cloneBefore({
+        //    prop: 'background',
+        //    value: gradient(colors.top, colors.bottom)
+        //});
+
+        decl.parent.insertBefore(decl, 'background-image: ' + gradient(colors.top, colors.bottom));
+    });
 };
 
 var extractPath = function (value) {
-    var path = value.match(/url\("(.+)"\)/)[1];
-    return 'test/img/'+path;
+    // todo good extract
+    return value.match(/url\("(.+)"\)/)[1];
+};
+
+var getImageColors = function (imagePath) {
+    return bdsm.findDominantColors(imagePath);
+};
+
+var gradient = function (top, bottom) {
+   return 'linear-gradient(' + rgb(top) + ', ' + rgb(bottom) + ')';
 };
 
 var rgb = function (color) {
     return 'rgb(' + color.r + ', ' + color.g + ', ' + color.b + ')';
 };
 
-var getImageColors = function (imagePath, cb) {
-    //cb({
-    //    top: {r: 255, g: 0, b: 0},
-    //    bottom: {r: 0, g: 0, b: 255}
-    //});
-
-    bdsm.findDominantColors(imagePath).then(cb);
-};
-
-var changeBackgroundValue = function (decl, cb) {
-    imagePath = extractPath(decl.value);
-
-    getImageColors(imagePath, function (colors) {
-        decl.value = gradient(colors.top, colors.bottom);
-        cb();
-    });
-};
-
-
-module.exports = function (opts) {
-    opts = opts || {};
-
-    // Work with options here
+module.exports = function (options) {
+    options = options || {};
 
     return function (css) {
-        var count = 0;
+        var processingDecls = [];
 
-        return new Promise(function (resolve, reject) {
-            css.eachDecl(function (decl) {
-                if (decl.prop == 'background') {
-                    count++;
-                    changeBackgroundValue(decl, function () {
-                        count--;
-                        if (!count) {
-                            resolve();
-                        }
-                    });
-                }
-            });
+        css.eachDecl(/^(background|background-image)$/, function (decl) {
+            processingDecls.push(mockupBackgroundImage(decl, options));
         });
+
+        return Promise.all(processingDecls);
     };
 };
 

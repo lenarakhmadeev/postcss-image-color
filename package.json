@@ -1,23 +1,25 @@
 {
-  "name": "postcss-background",
-  "version": "0.0.0",
-  "description": "PostCSS plugin Plugin for lalala",
+  "name": "postcss-image-mockup",
+  "version": "0.0.1",
+  "description": "PostCSS plugin inserting mockup of background image",
   "keywords": [
     "postcss",
     "css",
     "postcssplugin",
     "background",
+    "background-image",
     "gradient"
   ],
   "author": "lenarakhmadeev <lenarakhmadeev@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lenarakhmadeev/postcss-background.git"
+    "url": "https://github.com/lenarakhmadeev/postcss-image-mockup.git"
   },
   "dependencies": {
     "bdsm": "^0.2.2",
-    "postcss": "git://github.com/postcss/postcss.git#v4.1"
+    "postcss": "git://github.com/postcss/postcss.git#v4.1",
+    "q": "^1.2.0"
   },
   "devDependencies": {
     "chai": "1.10.0",

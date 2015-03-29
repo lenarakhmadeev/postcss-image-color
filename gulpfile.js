@@ -13,7 +13,6 @@ gulp.task('test', function () {
     return gulp.src('test/*.js', { read: false }).pipe(mocha());
 });
 
-
 gulp.task('background', function (cb) {
     var plugin = require('./index');
     var fs = require("fs");
@@ -23,15 +22,14 @@ gulp.task('background', function (cb) {
     postcss(plugin).process(css).then(function (processed) {
         fs.writeFile("./demo/demo-compiled.css", processed.css);
         cb();
-    })
+    });
 });
-
 
 gulp.task('demo', function (cb) {
     var plugin = require('./index');
     var postcss = require('gulp-postcss');
 
-    postcss([plugin]).then(cb)
+    postcss([plugin]).then(cb);
 });
 
 gulp.task('default', ['lint', 'test']);

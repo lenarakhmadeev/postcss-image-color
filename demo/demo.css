@@ -1,0 +1,27 @@
+div {
+	background-size: 100% 100% !important;
+	background-repeat: no-repeat;
+	width: 800px;
+	height: 600px;
+	margin: 10px;
+}
+
+.background-1 {
+	background: url("1.jpg");
+}
+
+.background-2 {
+	background: url("2.jpg");
+}
+
+.background-3 {
+	background: url("3.jpg");
+}
+
+.background-4 {
+	background: url("4.jpg");
+}
+
+.background-5 {
+	background: url("5.jpg");
+}

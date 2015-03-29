@@ -1,0 +1,34 @@
+{
+  "name": "postcss-background",
+  "version": "0.0.0",
+  "description": "PostCSS plugin Plugin for lalala",
+  "keywords": [
+    "postcss",
+    "css",
+    "postcssplugin",
+    "background",
+    "gradient"
+  ],
+  "author": "lenarakhmadeev <lenarakhmadeev@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lenarakhmadeev/postcss-background.git"
+  },
+  "dependencies": {
+    "bdsm": "^0.2.2",
+    "postcss": "git://github.com/postcss/postcss.git#v4.1"
+  },
+  "devDependencies": {
+    "chai": "1.10.0",
+    "gulp": "3.8.11",
+    "gulp-jshint": "1.9.2",
+    "gulp-mocha": "2.0.0",
+    "gulp-postcss": "^4.0.3",
+    "jshint-stylish": "1.0.0",
+    "mocha": "2.1.0"
+  },
+  "scripts": {
+    "test": "gulp"
+  }
+}

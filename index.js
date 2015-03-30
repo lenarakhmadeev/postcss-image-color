@@ -35,6 +35,7 @@ var rgb = function (color) {
 
 module.exports = function (options) {
     options = options || {};
+    options.basePath = options.basePath || '';
 
     return function (css) {
         var processingDecls = [];

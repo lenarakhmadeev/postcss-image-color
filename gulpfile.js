@@ -1,4 +1,5 @@
 var gulp = require('gulp');
+var postcssAsync = require('./gulp-postcss-async');
 
 gulp.task('lint', function () {
     var jshint = require('gulp-jshint');
@@ -13,23 +14,13 @@ gulp.task('test', function () {
     return gulp.src('test/*.js', { read: false }).pipe(mocha());
 });
 
-gulp.task('background', function (cb) {
+gulp.task('demo', function () {
     var plugin = require('./index');
-    var fs = require("fs");
-    var css = fs.readFileSync("./demo/demo.css", "utf8");
-    var postcss = require('postcss');
+    var processors = [plugin({basePath: 'demo/images', removeImage: true})];
 
-    postcss(plugin).process(css).then(function (processed) {
-        fs.writeFile("./demo/demo-compiled.css", processed.css);
-        cb();
-    });
-});
-
-gulp.task('demo', function (cb) {
-    var plugin = require('./index');
-    var postcss = require('gulp-postcss');
-
-    postcss([plugin]).then(cb);
+    return gulp.src('demo/demo.css')
+        .pipe( postcssAsync(processors) )
+        .pipe( gulp.dest('./demo/compiled') );
 });
 
 gulp.task('default', ['lint', 'test']);

@@ -14,13 +14,26 @@ gulp.task('test', function () {
     return gulp.src('test/*.js', { read: false }).pipe(mocha());
 });
 
-gulp.task('demo', function () {
-    var plugin = require('./index');
-    var processors = [plugin({basePath: 'demo/images', removeImage: true})];
+gulp.task('async', function () {
+    var processerer = function (message, timeout) {
+        return function (css) {
+            return new Promise(function (resolve) {
+                setTimeout(function () {
+                    console.log(message);
+                    resolve(css);
+                }, timeout);
+            });
+        };
+    };
 
-    return gulp.src('demo/demo.css')
-        .pipe( postcssAsync(processors) )
-        .pipe( gulp.dest('./demo/compiled') );
+    var processors = [
+        processerer('1m', 4000),
+        processerer('2m', 2000),
+        processerer('3m', 3000)
+    ];
+
+    return gulp.src('test/fixtures/1.css')
+        .pipe( postcssAsync(processors) );
 });
 
 gulp.task('default', ['lint', 'test']);

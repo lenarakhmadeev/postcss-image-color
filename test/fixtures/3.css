@@ -1,0 +1,4 @@
+li {
+	background: linear-gradient(image-color("1.jpg"), image-color("2.jpg"));
+	width: 200px;
+}

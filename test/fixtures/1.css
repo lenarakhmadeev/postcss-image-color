@@ -1,8 +1,8 @@
 li {
-	background: url("1.jpg");
+	background: image-color("1.jpg");
 	width: 200px;
 }
 
 div {
-	background: url("2.jpg");
+	background: image-color("2.jpg");
 }

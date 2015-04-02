@@ -23,4 +23,16 @@ describe('postcss-image-mockup', function () {
         var output = getCssText('1.out');
         asyncTest(input, output, {basePath: 'test/img'}, done);
     });
+
+    it('basePath', function (done) {
+        var input = getCssText('2');
+        var output = getCssText('2.out');
+        asyncTest(input, output, {basePath: 'test/img/base'}, done);
+    });
+
+    it('multiple in value', function (done) {
+        var input = getCssText('3');
+        var output = getCssText('3.out');
+        asyncTest(input, output, {basePath: 'test/img'}, done);
+    });
 });

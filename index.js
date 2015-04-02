@@ -1,53 +1,68 @@
+var postcss = require('postcss');
 var bdsm = require('bdsm');
 var path = require('path');
 
-var mockupBackgroundImage = function (decl, options) {
-    var imagePath = extractPath(decl.value);
-    var fullPath = path.join(options.basePath, imagePath);
+var COLOR_PATTERN = /image-color\("(.+?)"\)/;
+var COLOR_PATTERN_GLOB = /image-color\("(.+?)"\)/g;
 
-    return getImageColors(fullPath).then(function (colors) {
-        // todo ??
-        //decl.cloneBefore({
-        //    prop: 'background',
-        //    value: gradient(colors.top, colors.bottom)
-        //});
+var replacePattern = function (decl, options) {
+    var colorImages = decl.value.match(COLOR_PATTERN_GLOB);
 
-        decl.parent.insertBefore(decl, 'background-image: ' + gradient(colors.top, colors.bottom));
+    if (!colorImages) {
+        return Promise.resolve();
+    }
+
+    var colorPromises = getColors(colorImages, options);
+
+    return Promise.all(colorPromises)
+        .then(function (colors) {
+            decl.value = colors
+                .map(rgb)
+                .reduce(function (acc, val) {
+                    return acc.replace(COLOR_PATTERN, val);
+                }, decl.value);
+        });
+};
+
+var getColors = function (colorImages, options) {
+    return colorImages.map(function (image) {
+        var imagePath = fullPath(options.basePath, extractPath(image));
+        return getImageColor(imagePath);
     });
 };
 
+var getImageColor = function (imagePath) {
+    return bdsm.findDominantColors(imagePath)
+        .then(function (colors) {
+            return colors.top;
+        });
+};
+
 var extractPath = function (value) {
-    // todo good extract
-    return value.match(/url\("(.+)"\)/)[1];
+    return value.match(COLOR_PATTERN)[1];
 };
 
-var getImageColors = function (imagePath) {
-    return bdsm.findDominantColors(imagePath);
-};
-
-var gradient = function (top, bottom) {
-   return 'linear-gradient(' + rgb(top) + ', ' + rgb(bottom) + ')';
+var fullPath = function (basePath, imagePath) {
+    return path.join(basePath, imagePath);
 };
 
 var rgb = function (color) {
     return 'rgb(' + color.r + ', ' + color.g + ', ' + color.b + ')';
 };
 
-module.exports = function (options) {
+var plugin = function (options) {
     options = options || {};
     options.basePath = options.basePath || '';
 
     return function (css) {
         var processingDecls = [];
 
-        css.eachDecl(/^(background|background-image)$/, function (decl) {
-            processingDecls.push(mockupBackgroundImage(decl, options));
+        css.eachDecl(function (decl) {
+            processingDecls.push(replacePattern(decl, options));
         });
 
         return Promise.all(processingDecls);
     };
 };
 
-module.exports.postcss = function (css) {
-    return module.exports()(css);
-};
+module.exports = postcss.plugin('postcss-average-color', plugin);
